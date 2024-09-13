@@ -1,6 +1,13 @@
-import Link from 'next/link'
+"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  
   return (
     <header className="bg-white shadow-md">
       <nav className="container mx-auto px-6 py-4">
@@ -9,7 +16,7 @@ export default function Header() {
           <Link href="/" className="text-3xl font-extrabold text-gray-800 hover:text-gray-600 transition duration-300">
             ClientManager
           </Link>
-
+          
           {/* Navegación del menú */}
           <div className="hidden md:flex space-x-8">
             <Link href="/" className="text-gray-600 hover:text-gray-800 transition duration-300">
@@ -22,19 +29,23 @@ export default function Header() {
               Crear Cliente
             </Link>
           </div>
-
+          
           {/* Menú desplegable para móvil */}
           <div className="md:hidden">
-            <button aria-label="Open Menu" className="text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
+            <button
+              aria-label="Open Menu"
+              onClick={toggleMenu}
+              className="text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
             </button>
           </div>
         </div>
-
-        {/* Mobile navigation (hidden by default) */}
-        <div className="md:hidden mt-4">
+        
+        {/* Mobile navigation */}
+        <div className={`md:hidden mt-4 ${isMenuOpen ? 'block' : 'hidden'}`}>
           <Link href="/" className="block py-2 text-gray-600 hover:text-gray-800">
             Inicio
           </Link>
@@ -47,5 +58,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-  )
+  );
 }
