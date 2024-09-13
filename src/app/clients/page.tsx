@@ -96,7 +96,7 @@ export default function ClientList() {
                 <TableCell>{client.email}</TableCell>
                 <TableCell className="text-right">
                   <Link href={`/clients/${client.id}/edit`} passHref>
-                    <Button variant="outline" size="sm" className="mr-2">
+                    <Button variant="outline" size="sm" className="bg-black text-white border border-white font-bold py-3 px-6 rounded-md transition-colors duration-300 ease-in-out hover:bg-white hover:text-black hover:border-black focus:outline-none focus:ring-2 focus:ring-white">
                       Editar
                     </Button>
                   </Link>
