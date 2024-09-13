@@ -1,5 +1,5 @@
 import Link from 'next/link'
-
+//detalles del cliente
 // Datos de ejemplo
 const client = {
   id: '1',

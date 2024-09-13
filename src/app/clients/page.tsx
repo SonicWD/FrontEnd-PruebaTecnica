@@ -1,5 +1,5 @@
 'use client'
-
+//Lista de los clientes
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -88,9 +88,11 @@ export default function ClientList() {
                 <TableCell>{client.identificationNumber}</TableCell>
                 <TableCell>{client.email}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="outline" size="sm" className="mr-2">
-                    Editar
-                  </Button>
+                  <Link href={`/clients/${client.id}/edit`} passHref>
+                    <Button variant="outline" size="sm" className="mr-2">
+                      Editar
+                    </Button>
+                  </Link>
                   <Button variant="destructive" size="sm">
                     Eliminar
                   </Button>

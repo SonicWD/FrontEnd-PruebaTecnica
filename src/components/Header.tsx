@@ -14,7 +14,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           {/* Logo o Nombre del sitio */}
           <Link href="/" className="text-3xl font-extrabold text-gray-800 hover:text-gray-600 transition duration-300">
-            ClientManager
+            Prueba Tecnica TFHKA
           </Link>
           
           {/* Navegación del menú */}

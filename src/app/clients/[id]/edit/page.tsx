@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-
+//Editar Cliente
 //Datos de ejemplo
 const clientData = {
   id: '1',
