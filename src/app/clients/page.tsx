@@ -1,11 +1,11 @@
 'use client'
-//Lista de los clientes
-import { useState } from 'react'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Plus, Search } from 'lucide-react'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Plus, Search } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -13,25 +13,32 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { useClientStore } from '@/store/clientStore';
 
 // Datos de ejemplo
-const clients = [
+const initialClients = [
   { id: '1', name: 'Juan Pérez', identificationNumber: '12345678', email: 'juan@example.com' },
   { id: '2', name: 'María García', identificationNumber: '87654321', email: 'maria@example.com' },
   { id: '3', name: 'Carlos Rodríguez', identificationNumber: '23456789', email: 'carlos@example.com' },
   { id: '4', name: 'Ana Martínez', identificationNumber: '98765432', email: 'ana@example.com' },
   { id: '5', name: 'Luis Sánchez', identificationNumber: '34567890', email: 'luis@example.com' },
-]
+];
 
 export default function ClientList() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
+  const { clients, setClients } = useClientStore();
+
+  useEffect(() => {
+    // Inicializa los datos de clientes en el store
+    setClients(initialClients);
+  }, [setClients]);
 
   const filteredClients = clients.filter(client =>
     client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.identificationNumber.includes(searchTerm) ||
     client.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
 
   return (
     <motion.div
