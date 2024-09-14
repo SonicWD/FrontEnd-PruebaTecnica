@@ -4,7 +4,7 @@ const config = {
       API_URL: 'http://127.0.0.1:8000',
     },
     production: {
-      API_URL: 'https://api.tuapp.com',
+      API_URL: 'https://backend-pruebatecnica.onrender.com',
     },
     test: {
       API_URL: 'http://127.0.0.1:8001',

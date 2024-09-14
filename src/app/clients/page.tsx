@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 import { Plus, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import config from '@/utils/config';  // Usa la ruta correcta
+import config from '@/utils/config';
+import { Client } from '@/utils/types'; // Asegúrate de que Client coincida con el formato de la API
 
 import {
   Table,
@@ -17,30 +18,61 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useClientStore } from '@/store/clientStore';
-console.log(config.API_URL);  // Imprime la URL correcta  
-// Datos de ejemplo
-const initialClients = [
-  { id: '1', name: 'Juan Pérez', identificationNumber: '12345678', email: 'juan@example.com' },
-  { id: '2', name: 'María García', identificationNumber: '87654321', email: 'maria@example.com' },
-  { id: '3', name: 'Carlos Rodríguez', identificationNumber: '23456789', email: 'carlos@example.com' },
-  { id: '4', name: 'Ana Martínez', identificationNumber: '98765432', email: 'ana@example.com' },
-  { id: '5', name: 'Luis Sánchez', identificationNumber: '34567890', email: 'luis@example.com' },
-];
+
+// Fetch client list from API
+async function fetchClients(): Promise<Client[]> {
+  const response = await fetch(`${config.API_URL}/list_clients`);
+  console.log('API Response:', response);
+  if (!response.ok) {
+    throw new Error('Failed to fetch clients');
+  }
+  const data = await response.json();
+  console.log('Fetched Data:', data);
+  return data;
+}
+
+// Delete client by ID
+async function deleteClient(clientId: number): Promise<void> {
+  const response = await fetch(`${config.API_URL}/delete_client/${clientId}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete client');
+  }
+}
 
 export default function ClientList() {
   const [searchTerm, setSearchTerm] = useState('');
   const { clients, setClients } = useClientStore();
 
+  // Fetch clients from API on component mount
   useEffect(() => {
-    // Inicializa los datos de clientes en el store
-    setClients(initialClients);
+    fetchClients()
+      .then(data => {
+        console.log('Setting clients:', data);
+        setClients(data);
+      })
+      .catch(error => console.error('Error fetching clients:', error));
   }, [setClients]);
 
+  // Filter clients based on search term
   const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.identificationNumber.includes(searchTerm) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase())
+    client.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.numero_identificacion.includes(searchTerm) ||
+    client.correo.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  console.log('Filtered Clients:', filteredClients);
+
+  // Handle client deletion
+  const handleDeleteClient = async (clientId: number) => {
+    try {
+      await deleteClient(clientId);
+      setClients(clients.filter(client => client.id !== clientId));
+    } catch (error) {
+      console.error('Error deleting client:', error);
+    }
+  };
 
   return (
     <motion.div
@@ -93,16 +125,20 @@ export default function ClientList() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <TableCell className="font-medium">{client.name}</TableCell>
-                <TableCell>{client.identificationNumber}</TableCell>
-                <TableCell>{client.email}</TableCell>
+                <TableCell className="font-medium">{client.nombre}</TableCell>
+                <TableCell>{client.numero_identificacion}</TableCell>
+                <TableCell>{client.correo}</TableCell>
                 <TableCell className="text-right">
                   <Link href={`/clients/${client.id}/edit`} passHref>
                     <Button variant="outline" size="sm" className="bg-black text-white border border-white font-bold py-3 px-6 rounded-md transition-colors duration-300 ease-in-out hover:bg-white hover:text-black hover:border-black focus:outline-none focus:ring-2 focus:ring-white">
                       Editar
                     </Button>
                   </Link>
-                  <Button variant="destructive" size="sm">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDeleteClient(client.id)}
+                  >
                     Eliminar
                   </Button>
                 </TableCell>
@@ -112,5 +148,5 @@ export default function ClientList() {
         </Table>
       </div>
     </motion.div>
-  )
+  );
 }

@@ -96,7 +96,7 @@ const CreateClient = () => {
           identificationType: '',
           identificationNumber: '',
           email: '',
-          age: 0,
+          age: 18,
           phoneNumber: ''
         }}
         onSubmit={handleFormSubmit}

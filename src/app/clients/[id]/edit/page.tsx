@@ -1,8 +1,10 @@
-'use client';
+'use client'
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ClientForm from '@/components/ClientForm';
+import axios from 'axios';
+import config from '@/utils/config';
 
 // Define la interfaz para el tipo de datos del formulario
 interface IClientForm {
@@ -15,30 +17,51 @@ interface IClientForm {
   phoneNumber: string;
 }
 
-const clientData: IClientForm = {
-  id: '1',
-  name: 'Juan Pérez',
-  identificationType: 'DNI',
-  identificationNumber: '12345678',
-  email: 'juan@example.com',
-  age: 35,
-  phoneNumber: '+1234567890',
-};
-
 export default function EditClient({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [formData, setFormData] = useState<IClientForm>(clientData);
+  const [formData, setFormData] = useState<IClientForm | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Aquí podrías hacer una llamada a la API para obtener los datos del cliente
-    setFormData(clientData);
+    const fetchClientData = async () => {
+      try {
+        // Cambiamos la ruta a /get_client/
+        const response = await axios.get(`${config.API_URL}/get_client/${params.id}`);
+        setFormData(response.data);
+        console.log('Datos del cliente:', response.data);
+      } catch (err) {
+        setError('No se pudo cargar la información del cliente.');
+        console.error('Error fetching client data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClientData();
   }, [params.id]);
 
-  const handleFormSubmit = (data: IClientForm) => {
-    console.log('Datos actualizados:', data);
-    // Lógica para enviar los datos actualizados al servidor
-    router.push(`/clients/${params.id}`);
+  const handleFormSubmit = async (data: IClientForm) => {
+    try {
+      await axios.put(`${config.API_URL}/update_client/${params.id}`, data);
+      console.log('Datos actualizados:', data);
+      router.push(`/clients/${params.id}`);
+    } catch (err) {
+      console.error('Error al actualizar los datos del cliente:', err);
+    }
   };
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!formData) {
+    return <div>No se encontró el cliente.</div>;
+  }
 
   return (
     <div className="container mx-auto px-6 py-8">
