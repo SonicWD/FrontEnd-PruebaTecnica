@@ -12,7 +12,7 @@ const config = {
   };
   
   // Determinar el entorno actual
-  const ENV = process.env.NODE_ENV || 'development';
+  const ENV = process.env.NODE_ENV || 'production';
   
   // Cargar la configuración según el entorno
   const currentConfig = config[ENV as keyof typeof config];
