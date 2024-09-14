@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { Plus, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import config from '@/utils/config';  // Usa la ruta correcta
+
 import {
   Table,
   TableBody,
@@ -15,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useClientStore } from '@/store/clientStore';
-
+console.log(config.API_URL);  // Imprime la URL correcta  
 // Datos de ejemplo
 const initialClients = [
   { id: '1', name: 'Juan Pérez', identificationNumber: '12345678', email: 'juan@example.com' },
