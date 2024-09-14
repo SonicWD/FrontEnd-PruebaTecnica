@@ -1,10 +1,15 @@
 import create from 'zustand';
 
-interface Client {
-  id: string;
-  name: string;
-  identificationNumber: string;
-  email: string;
+export interface Client {
+  id: number;
+  nombre: string;
+  tipo_identificacion: string;
+  numero_identificacion: string;
+  correo: string;
+  edad: number;
+  telefono: string;
+  fecha_creacion: string;
+  fecha_actualizacion?: string;
 }
 
 interface ClientStore {
