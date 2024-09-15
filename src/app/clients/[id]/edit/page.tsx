@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ClientForm from '@/components/ClientForm';
 import axios from 'axios';
@@ -26,9 +26,8 @@ export default function EditClient({ params }: { params: { id: string } }) {
     const fetchClientData = async () => {
       try {
         const response = await axios.get(`${config.API_URL}/get_client/${params.id}`);
-        console.log('Respuesta de la API:', response.data);
+        console.log('Respuesta de la API (GET):', response.data);
         
-        // Transformar los datos para que coincidan con la interfaz IClientForm
         const datosTransformados: IClientForm = {
           id: response.data.id,
           name: response.data.nombre,
@@ -53,21 +52,48 @@ export default function EditClient({ params }: { params: { id: string } }) {
   }, [params.id]);
 
   const handleFormSubmit = async (data: IClientForm) => {
+    const transformedData = {
+      nombre: data.name,
+      tipo_identificacion: data.identificationType,
+      numero_identificacion: data.identificationNumber,
+      correo: data.email,
+      edad: data.age,
+      telefono: data.phoneNumber,
+    };
+  
+    console.log('Datos enviados al endpoint de actualización:', transformedData);
+  
     try {
-      await axios.put(`${config.API_URL}/update_client/${params.id}`, data);
-      console.log('Datos actualizados:', data);
+      const response = await axios.put(`${config.API_URL}/update_client/${params.id}`, transformedData);
+      console.log('Respuesta de la API después de actualizar:', response.data);
       router.push(`/clients/${params.id}`);
     } catch (err) {
       console.error('Error al actualizar los datos del cliente:', err);
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          console.error('Respuesta de error del servidor:', err.response.data);
+          // Verificar y manejar posibles respuestas vacías o errores
+          if (err.response.data) {
+            setError(`Error al actualizar: ${err.response.data.detail || 'Revise los datos e intente de nuevo.'}`);
+          } else {
+            setError('Respuesta vacía del servidor.');
+          }
+        } else {
+          setError('Hubo un error al guardar los datos del cliente. Por favor, intente de nuevo.');
+        }
+      } else {
+        setError('Error desconocido al guardar los datos del cliente.');
+      }
     }
   };
+  
 
   if (loading) {
     return <div>Cargando...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="text-red-500">{error}</div>;
   }
 
   if (!formData) {

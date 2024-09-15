@@ -3,7 +3,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import * as yup from "yup";
 import { useClientStore } from "@/store/clientStore";  // Importa el store
-
 interface IClientForm {
   name: string;
   identificationType: string;
@@ -72,14 +71,13 @@ const ClientForm: React.FC<ClientFormProps> = ({ defaultValues, clientId, onSubm
   }, [defaultValues, reset]);
 
   console.log('Errores del formulario:', errors);
+  const handleFormSubmit = (data: IClientForm) => {
+    console.log('Datos del formulario antes de enviar:', data);
+    onSubmit(data);
+  };
   return (
-    <form
-    onSubmit={handleSubmit((data) => {
-      console.log('Formulario enviado con datos:', data);
-      onSubmit(data);
-    })}
-      className="bg-black text-white p-6 rounded-lg shadow-lg"
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="bg-black text-white p-6 rounded-lg shadow-lg">
+
       {/* Nombre */}
       <div className="mb-4">
         <label
