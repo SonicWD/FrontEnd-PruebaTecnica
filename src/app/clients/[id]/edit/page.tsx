@@ -6,7 +6,6 @@ import ClientForm from '@/components/ClientForm';
 import axios from 'axios';
 import config from '@/utils/config';
 
-// Define la interfaz para el tipo de datos del formulario
 interface IClientForm {
   id?: string;
   name: string;
@@ -26,13 +25,25 @@ export default function EditClient({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        // Cambiamos la ruta a /get_client/
         const response = await axios.get(`${config.API_URL}/get_client/${params.id}`);
-        setFormData(response.data);
-        console.log('Datos del cliente:', response.data);
+        console.log('Respuesta de la API:', response.data);
+        
+        // Transformar los datos para que coincidan con la interfaz IClientForm
+        const datosTransformados: IClientForm = {
+          id: response.data.id,
+          name: response.data.nombre,
+          identificationType: response.data.tipo_identificacion,
+          identificationNumber: response.data.numero_identificacion,
+          email: response.data.correo,
+          age: response.data.edad,
+          phoneNumber: response.data.telefono,
+        };
+        
+        setFormData(datosTransformados);
+        console.log('Datos del cliente transformados:', datosTransformados);
       } catch (err) {
         setError('No se pudo cargar la información del cliente.');
-        console.error('Error fetching client data:', err);
+        console.error('Error al obtener los datos del cliente:', err);
       } finally {
         setLoading(false);
       }

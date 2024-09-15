@@ -7,7 +7,7 @@ import { Plus, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import config from '@/utils/config';
-import { Client } from '@/utils/types'; // Asegúrate de que Client coincida con el formato de la API
+import { Client } from '@/store/clientStore'; // Asegúrate de que Client coincida con el formato de la API
 
 import {
   Table,
@@ -22,12 +22,10 @@ import { useClientStore } from '@/store/clientStore';
 // Fetch client list from API
 async function fetchClients(): Promise<Client[]> {
   const response = await fetch(`${config.API_URL}/list_clients`);
-  console.log('API Response:', response);
   if (!response.ok) {
     throw new Error('Failed to fetch clients');
   }
   const data = await response.json();
-  console.log('Fetched Data:', data);
   return data;
 }
 
@@ -49,7 +47,6 @@ export default function ClientList() {
   useEffect(() => {
     fetchClients()
       .then(data => {
-        console.log('Setting clients:', data);
         setClients(data);
       })
       .catch(error => console.error('Error fetching clients:', error));
@@ -62,7 +59,6 @@ export default function ClientList() {
     client.correo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log('Filtered Clients:', filteredClients);
 
   // Handle client deletion
   const handleDeleteClient = async (clientId: number) => {

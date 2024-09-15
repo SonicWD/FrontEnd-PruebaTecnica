@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import * as yup from "yup";
+import { useClientStore } from "@/store/clientStore";  // Importa el store
 
 interface IClientForm {
   name: string;
@@ -14,6 +15,7 @@ interface IClientForm {
 
 interface ClientFormProps {
   defaultValues: IClientForm;
+  clientId?: number; 
   onSubmit: (data: IClientForm) => void;
 }
 
@@ -36,7 +38,15 @@ const schema = yup.object().shape({
   phoneNumber: yup.string().required("El número de teléfono es obligatorio"),
 });
 
-const ClientForm = ({ defaultValues, onSubmit }: ClientFormProps) => {
+const ClientForm: React.FC<ClientFormProps> = ({ defaultValues, clientId, onSubmit }) => {
+  console.log('Valores por defecto recibidos:', defaultValues);
+  console.log('ID del cliente recibido:', clientId);
+
+  const { clients } = useClientStore();
+  const selectedClient = clientId ? clients.find(client => client.id === clientId) : null;
+
+  console.log('Cliente seleccionado del store:', selectedClient);
+
   const {
     register,
     handleSubmit,
@@ -44,17 +54,30 @@ const ClientForm = ({ defaultValues, onSubmit }: ClientFormProps) => {
     reset,
   } = useForm<IClientForm>({
     resolver: yupResolver(schema),
-    defaultValues, // Se establecen los valores predeterminados
+    defaultValues: defaultValues || (selectedClient ? {
+      name: selectedClient.nombre,
+      identificationType: selectedClient.tipo_identificacion,
+      identificationNumber: selectedClient.numero_identificacion,
+      email: selectedClient.correo,
+      age: selectedClient.edad,
+      phoneNumber: selectedClient.telefono,
+    } : undefined),
   });
 
-  // Reseteamos el formulario con los nuevos valores cuando cambian
   useEffect(() => {
-    reset(defaultValues);
+    console.log('useEffect activado. Valores por defecto:', defaultValues);
+    if (defaultValues) {
+      reset(defaultValues);
+    }
   }, [defaultValues, reset]);
 
+  console.log('Errores del formulario:', errors);
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+    onSubmit={handleSubmit((data) => {
+      console.log('Formulario enviado con datos:', data);
+      onSubmit(data);
+    })}
       className="bg-black text-white p-6 rounded-lg shadow-lg"
     >
       {/* Nombre */}
@@ -70,7 +93,7 @@ const ClientForm = ({ defaultValues, onSubmit }: ClientFormProps) => {
             errors.name ? "border-red-500" : "border-white"
           } rounded w-full py-2 px-3 text-white bg-black leading-tight focus:outline-none focus:shadow-outline`}
           id="name"
-          {...register("name")}
+          {...register("name")}placeholder="Nombre"
         />
         {errors.name && (
           <p className="text-red-500 text-xs italic">{errors.name.message}</p>
