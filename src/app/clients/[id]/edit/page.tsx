@@ -1,10 +1,12 @@
 'use client'
-
+//ClientList.tsx
+// Se edita un cliente por ID
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ClientForm from '@/components/ClientForm';
 import axios from 'axios';
 import config from '@/utils/config';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface IClientForm {
   id?: string;
@@ -15,7 +17,7 @@ interface IClientForm {
   age: number;
   phoneNumber: string;
 }
-
+// Se obtiene el cliente por ID y se actualiza
 export default function EditClient({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [formData, setFormData] = useState<IClientForm | null>(null);
@@ -50,7 +52,7 @@ export default function EditClient({ params }: { params: { id: string } }) {
 
     fetchClientData();
   }, [params.id]);
-
+// Se actualiza el cliente
   const handleFormSubmit = async (data: IClientForm) => {
     const transformedData = {
       nombre: data.name,
@@ -61,9 +63,8 @@ export default function EditClient({ params }: { params: { id: string } }) {
       telefono: data.phoneNumber,
     };
   
-    console.log('Datos enviados al endpoint de actualización:', transformedData);
   
-    try {
+    try {//se manda a la API la Informacion 
       const response = await axios.put(`${config.API_URL}/update_client/${params.id}`, transformedData);
       console.log('Respuesta de la API después de actualizar:', response.data);
       router.push(`/clients/${params.id}`);
@@ -89,7 +90,7 @@ export default function EditClient({ params }: { params: { id: string } }) {
   
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

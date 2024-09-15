@@ -1,5 +1,5 @@
 'use client'
-
+//clientDetail.tsx
 import { useEffect, useState } from "react"
 import axios from "axios"
 import Link from "next/link"
@@ -23,12 +23,12 @@ interface IClient {
   edad: number
   telefono: string
 }
-
+// se utiliza para mostrar los detalles de un cliente en particular por ID
 export default function ClientDetail({ params }: { params: { id: string } }) {
   const [client, setClient] = useState<IClient | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const router = useRouter()
-
+// ese es par la API para obtener los detalles del cliente
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
@@ -50,7 +50,7 @@ export default function ClientDetail({ params }: { params: { id: string } }) {
   }, [params.id])
 
   const handleDelete = async () => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar este cliente?")) {
+    if (window.confirm("¿Estás seguro de que quieres eliminar este cliente?")) {// tal vez era mejor un Dialog que lo comfirmara 
       try {
         await axios.delete(`${config.API_URL}/delete_client/${params.id}`)
         toast({

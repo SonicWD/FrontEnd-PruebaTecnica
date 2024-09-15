@@ -1,12 +1,13 @@
 'use client'
-
+//CreateClient.tsx
+//importaciones
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { toast } from "@/components/ui/use-toast"
 import ClientForm from '@/components/ClientForm'
-import { Button } from '@/components/ui/button'; // Ajusta el path según tu estructura de carpetas
-import config from '@/utils/config'; // Importa la configuración de la API
+import { Button } from '@/components/ui/button'; 
+import config from '@/utils/config'; 
 
 interface IClientForm {
   id?: string;

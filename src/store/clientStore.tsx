@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-
+//Se crea la interfaz Client que contiene los atributos de un cliente utilizando ZUSTAND
 export interface Client {
   id: number;
   nombre: string;

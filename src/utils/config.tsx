@@ -1,4 +1,5 @@
 // utils/config.ts
+// Se utiliza para hacer referencia a la URL de la API en el frontend, y poder trabajar mas comodo entre ramas
 const config = {
     development: {
       API_URL: 'http://127.0.0.1:8000',

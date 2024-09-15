@@ -1,5 +1,6 @@
 'use client';
-
+//ClientList.tsx
+//importaciones
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -7,7 +8,7 @@ import { Plus, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import config from '@/utils/config';
-import { Client } from '@/store/clientStore'; // Asegúrate de que Client coincida con el formato de la API
+import { Client } from '@/store/clientStore'; 
 
 import {
   Table,
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { useClientStore } from '@/store/clientStore';
 
-// Fetch client list from API
+// Fetch para llamar API
 async function fetchClients(): Promise<Client[]> {
   const response = await fetch(`${config.API_URL}/list_clients`);
   if (!response.ok) {
@@ -29,7 +30,7 @@ async function fetchClients(): Promise<Client[]> {
   return data;
 }
 
-// Delete client by ID
+// Eliminar Cliente segun ID
 async function deleteClient(clientId: number): Promise<void> {
   const response = await fetch(`${config.API_URL}/delete_client/${clientId}`, {
     method: 'DELETE',
@@ -43,7 +44,7 @@ export default function ClientList() {
   const [searchTerm, setSearchTerm] = useState('');
   const { clients, setClients } = useClientStore();
 
-  // Fetch clients from API on component mount
+  // Por si falla el fetch de clientes manejo de errores
   useEffect(() => {
     fetchClients()
       .then(data => {
@@ -52,7 +53,7 @@ export default function ClientList() {
       .catch(error => console.error('Error fetching clients:', error));
   }, [setClients]);
 
-  // Filter clients based on search term
+  // Flitro de clientes por nombre, identificacion o correo
   const filteredClients = clients.filter(client =>
     client.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.numero_identificacion.includes(searchTerm) ||
@@ -60,7 +61,7 @@ export default function ClientList() {
   );
 
 
-  // Handle client deletion
+  //Por si falla el delete de cliente manejo de errores
   const handleDeleteClient = async (clientId: number) => {
     try {
       await deleteClient(clientId);
