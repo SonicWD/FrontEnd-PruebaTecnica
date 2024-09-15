@@ -5,6 +5,7 @@ import axios from "axios"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Edit, Trash2, ArrowLeft, User, Mail, Phone, Calendar, IdCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
